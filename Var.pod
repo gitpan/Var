@@ -1,0 +1,365 @@
+=pod
+
+
+=head1 NAME
+
+Var - A unified interface to many modules
+
+=head1 CAUTION
+
+This document is messy, unstructured, and maybe erroneous, infeasible or re-invent-the-wheel somewhere. I will add more details later.
+
+=head1 SYNOPSIS
+
+    use Var;
+
+=head2 INITIATION
+
+    $v = var $VAR;
+    $a = array @ARRAY;
+    $h = hash %HASH;
+
+
+=head2 BASIC STRING/NUMBER MANIPULATION
+
+    $s = string "perl is nifty!";
+    $s->concat($string);
+    $s->append($string);
+
+    $s->prepend($string);
+
+    $s->reverse();
+
+    $s->substr;
+
+    $s->uc();
+    $s->ucfirst;
+    $s->lc();
+    $s->lcfirst;
+
+    $s->length;
+
+    $s->chop;
+    $s->chomp;
+
+    $s->strip_space;
+    $s->strip_lspace;
+    $s->strip_rspace;
+
+    $s->split('');
+    print join q/,/, $s->split('');
+
+    $s->to_scalar;
+
+=head2 FLAGS
+
+=head3 brutal() => destructive processing
+
+    $v->brutal(1);
+    $v->brutal(0);
+
+If brutal() is set to 'true', modification will affect the current value.
+
+    $v = var "Yah, Baby!";
+    print $v->brutal(1)->chop;            # 'Yah, Baby'
+    print $v->to_string;                  # 'Yah, Baby' too
+
+Default value is B<false>
+
+    $v = var "Yah, Baby!";
+    print $v->chop;                       # 'Yah, Baby'
+    print $v->to_string;                  # 'Yah, Baby!'
+
+
+=head2 LIST PROCESSING
+
+    $a = array qw(1 2 3);
+
+    $a->size;
+    $a->reverse;
+    $a->join('');
+
+    $a->first;
+    $a->max;
+    $a->maxstr;
+    $a->min;
+    $a->minstr;
+
+    $a->reduce('+');     # 1 + 2 + 3
+    $a->reduce('$a + $b');
+    $a->reduce('$a > $b ? $a : $b');
+
+    $a->shuffle;
+
+    $a->range;
+    $a->mean;
+    $a->median;
+    $a->mode;
+    $a->sum;
+    $a->stddev;
+    $a->variance;
+
+    $a->to_array;
+
+=head2 DIGEST
+
+    $v->md2();
+    $v->md2_hex();
+    $v->md2_base64();
+
+    $v->md5();
+    $v->md5_hex();
+    $v->md5_base64();
+
+    $v->sha1();
+    $v->sha1_hex();
+    $v->sha1_base64();
+
+    $v->hmac_md5($key);
+    $v->hmac_md5_hex($key);
+
+
+=head2 CRYPT
+
+    $v->crypt($salt);
+
+=head2 COMPRESSION
+
+    $v->compress();
+    $v->uncompress();
+
+    $v->brutal(1)->compress();
+    print $v->uncompress();
+    # same as 'print $v->to_string;'
+
+=head2 FUN STUFF
+
+    $v->bastardize(-pig, -n20e);
+
+=head2 SWITCH
+
+    $given = var <STDIN>;
+    $given->switch(
+	'a' => \&process_a,
+	'1' => \&process_1,
+    )->(@arguments);
+
+=head2 NATURAL LANGUAGE THINGS
+
+
+    $number->number_to_zh();
+    $number->number_to_en();
+
+
+=head2 REGEXPS
+
+    $var = array @PATTERNS;
+    $var->list2re();       # Regexp::List
+
+
+=head1 UNIMPLEMENTED
+
+The following usage will not exist yet for version 0.01.
+
+=head2 FLAGS
+
+=head3 on_keys, on_values
+
+    $h->on_keys(1)->uc();
+    $h->on_values(1)->uc();
+
+
+=head2 HASH PROCESSING
+
+    $h = hash %h;
+    $h->swap_keys_values();
+
+    $h->to_hash;
+
+
+
+=head2 REGEXPS
+
+
+    $s = var $STRING;      # Regexp::Common
+    $s->is_number;
+    $s->is_real_number;
+    $s->is_ipaddr;
+    $s->is_profanity;
+
+=head2 INLINE VARIABLES
+
+    $iv = inline 'TAG';
+    $ia = inline_array 'TAG';
+    $ih = inline_hash 'TAG';
+    $ir = inline_regexp 'TAG';
+
+
+=head2 PARALLEL LIST PROCESSING
+
+
+    $x = array @X;
+    $y = array @Y;
+
+
+    $x++;
+    $x += 2;
+
+    $y--;
+    $y -= 3;
+    # foreach (@VEC) { $_ -= 3 }
+
+    $z = $x ** 2;
+
+    $x->lc();
+    $x->uc();
+    $z = $x->sqrt;
+    # foreach (@VEC) { $_ = sqrt $_ }
+
+    $z = $x->log;
+    # foreach (@VEC) { $_ = log $_ }
+
+    $z = $x + $y;
+    $z = $x . $y;
+    $z = $x * $y;
+    $z = $x - $y;
+    $z = $x / $y;
+
+
+
+
+=head2 ENCODING
+
+    $s->guess_encoding();
+
+    $s->convert_encoding();
+
+
+=head2 NATURAL LANGUAGE THINGS
+
+
+    $text->stem(-en);
+    $text->translate('en' => 'fr');
+
+=head2 HTML / XML
+
+    $parser = $string->html_parser(\&callback);
+    $parser = $string->xml_parser(\&callback);
+    $parser->parse($text);
+
+
+=head2 STRING FORMATTING
+
+    $v = var "%d+%d %f-%s";
+
+    $v->sprintf(@args);
+
+    $v->scanf($input);
+    @catched = $v->scanf(@args);
+
+=head2 PRETTY PRINTING
+
+    $string->wrap;
+    $string->wrap(-zh);
+
+
+=head2 SERIALIZATION
+
+    $string->freeze;
+    $string->thaw;
+
+    $array->freeze;
+    $array->thaw;
+
+    $hash->freeze;
+    $hash->thaw;
+
+=head2 PARSER
+
+    $grammar = var $source;
+    $parser = $grammar->build_recdesc_parser;
+    $parser->parse($text);
+
+
+=head2 TYPE METAMORPHOSIS / HETEROGENEOUS DATA TYPES
+
+
+    $v->become_bigint();
+    $v->become_bignum();
+    $v->become_heap();
+    $v->become($some_other_type);
+
+    $var = var("struct { int num; char* str };")->become_struct;
+    print $var->num, $var->str;
+
+
+=head2 INTERNET QUERY
+
+    $var->whois();
+
+    $var->google();
+
+    $var->find_acronym();
+
+
+=head2 TEMPLATE STUFF
+
+    $template = var $source;
+    $template->mason(%args);
+
+    $template = inline 'MASON';
+    $template->mason(%args);
+
+
+    $template = var $source;
+    $template->TT(%args);
+
+    $template = inline 'TEMPLATE';
+    $template->TT_extract($text);
+
+
+    $args = hash %ARGS;
+    $args->feed_mason()->to_string;
+    $args->feed_TT()->to_string;
+
+
+
+=head1 DESCRIPTION
+
+This module is a proxy, a unified interface to many variable-processing built-in functions and modules. Yeah, it's inspired by INGY's magnificent L<IO::All>. This module (combines|will combine) many variable processing functions and methods into unity, and, using this, you don't need to elaborately import modules and worry about various and different interfaces provided by those modules.
+
+Those re-invented methods are all for the purpose of completeness. I don't expect you to use them because they may slow you down so badly.
+
+
+=head1 TO DO
+
+A LOT. A LOT. A LOT.
+
+There are definitely a houseful of things that can be done. Please send your comments and suggestions to me, especially when you've got some really cool and mad ideas.
+
+=head1 COPYRIGHT
+
+Copyright (C) 2004 by Yung-chung Lin (a.k.a. xern) <xern@cpan.org>
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself
+
+=cut
+
+
+__END__
+__REFERENCE__
+22:53 <@xern> print(($obj->method1)->method2)  v.s. print($obj->method1);  # is it
+              possible to be aware of the different contexts in method1?
+22:53 <@autrijus> xern: perldoc -f wantarray
+22:54 <@xern> hcchien: you are right XD
+22:56 <@xern> @@;
+22:59 <@xern> why wantarray? what i wanna know is whether the result of method1 is
+              final argument of print.
+23:00 <@autrijus> ->method1->method2 will be a scalar context
+23:00 <@autrijus> for method1
+23:01 <@autrijus> if you wan to walk the OP tree...
+23:01 <@autrijus> look at optimizer.pm
+23:01 <@xern> ah, i see
+23:01 <@autrijus> and B.pm
+23:01 <@autrijus> and PadWalker.pm

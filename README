@@ -1,0 +1,165 @@
+NAME
+       Var - A unified interface to many modules
+
+SYNOPSIS
+           use Var;
+
+       INITIATION
+
+           $v = var $VAR;
+           $a = array @ARRAY;
+           $h = hash %HASH;
+
+       BASIC STRING/NUMBER MANIPULATION
+
+           $s = string "perl is nifty!";
+           $s->concat($string);
+           $s->append($string);
+
+           $s->prepend($string);
+
+           $s->reverse();
+
+           $s->substr;
+
+           $s->uc();
+           $s->ucfirst;
+           $s->lc();
+           $s->lcfirst;
+
+           $s->length;
+
+           $s->chop;
+           $s->chomp;
+
+           $s->strip_space;
+           $s->strip_lspace;
+           $s->strip_rspace;
+
+           $s->split('');
+           print join q/,/, $s->split('');
+
+           $s->to_scalar;
+
+
+       LIST PROCESSING
+
+           $a = array qw(1 2 3);
+
+           $a->size;
+           $a->reverse;
+           $a->join('');
+
+           $a->first;
+           $a->max;
+           $a->maxstr;
+           $a->min;
+           $a->minstr;
+
+           $a->reduce('+');     # 1 + 2 + 3
+           $a->reduce('$a + $b');
+           $a->reduce('$a > $b ? $a : $b');
+
+           $a->shuffle;
+
+           $a->range;
+           $a->mean;
+           $a->median;
+           $a->mode;
+           $a->sum;
+           $a->stddev;
+           $a->variance;
+
+           $a->to_array;
+
+       DIGEST
+
+           $v->md2();
+           $v->md2_hex();
+           $v->md2_base64();
+
+           $v->md5();
+           $v->md5_hex();
+           $v->md5_base64();
+
+           $v->sha1();
+           $v->sha1_hex();
+           $v->sha1_base64();
+
+           $v->hmac_md5($key);
+           $v->hmac_md5_hex($key);
+
+       CRYPT
+
+           $v->crypt($salt);
+
+       COMPRESSION
+
+           $v->compress();
+           $v->uncompress();
+
+           $v->brutal(1)->compress();
+           print $v->uncompress();
+           # same as 'print $v->to_string;'
+
+
+       FUN STUFF
+
+           $v->bastardize(-pig, -n20e);
+
+       SWITCH
+
+           $given = var <STDIN>;
+           $given->switch(
+               'a' => \&process_a,
+               '1' => \&process_1,
+           )->(@arguments);
+
+       NATURAL LANGUAGE THINGS
+
+           $number->number_to_zh();
+           $number->number_to_en();
+
+       REGEXPS
+
+           $var = array @PATTERNS;
+           $var->list2re();       # Regexp::List
+
+
+DESCRIPTION
+       This module is a proxy, a unified interface to many vari-
+       able-processing built-in functions and modules. Yeah, it's
+       inspired by INGY's magnificent IO::All. This module (com-
+       bines|will combine) many variable processing functions and
+       methods into unity, and, using this, you don't need to
+       elaborately import modules and worry about various and
+       different interfaces provided by those modules.
+
+       Those re-invented methods are all for the purpose of com-
+       pleteness. I don't expect you to use them because they may
+       slow you down so badly.
+
+TO DO
+       A LOT. A LOT. A LOT.
+
+       There are definitely a houseful of things that can be
+       done. Please send your comments and suggestions to me,
+       especially when you've got some really cool and mad ideas.
+
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2004 by Yung-chung Lin (a.k.a. xern) <xern@cpan.org>
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself
+
